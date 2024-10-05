@@ -1,0 +1,420 @@
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Climate Indices (Beta - Itzik Y)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            direction: rtl;
+        }
+        .filters-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .filters {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+        }
+        .graph {
+            margin-top: 15px;
+            height: 400px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .form-inline {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .form-inline div {
+            flex: 1;
+            padding: 0 5px;
+            box-sizing: border-box;
+        }
+        .filters label {
+            font-weight: bold;
+            color: black;
+        }
+        .form-inline label {
+            margin: 0;
+        }
+        .form-inline input,
+        .form-inline select {
+            width: 100%;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-group label {
+            flex-basis: 30%;
+            text-align: right;
+            margin-bottom: 0;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .form-group input,
+        .form-group select {
+            flex-basis: 65%;
+        }
+        .form-group input[type="file"] {
+            display: inline-block;
+            font-size: 14px;
+            padding: 6px 10px;
+            margin: 3px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .form-group input[type="file"]:hover {
+            background-color: #45a049;
+        }
+        .button {
+            font-size: 14px;
+            padding: 6px 10px;
+            margin: 3px;
+            border-radius: 5px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #357abd;
+        }
+        .input-range {
+            appearance: none;
+            width: 100%;
+            height: 5px;
+            background: #ddd;
+            border-radius: 5px;
+            outline: none;
+            transition: background 0.15s;
+        }
+        .input-range::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #4a90e2;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+        .input-range::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #4a90e2;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+    </style>
+</head>
+<body>
+<div class="container clearfix">
+    <div class="filters-title">Climate Indices (Beta - Itzik Y)</div>
+    <div class="filters">
+        <div class="form-group">
+            <label for="csvFile">בחר קובץ CSV:</label>
+            <input type="file" id="csvFile" accept=".csv">
+        </div>
+        <div class="form-inline">
+            <div>
+                <label for="analysisType">פרמטר:</label>
+                <select id="analysisType">
+                    <option value="TX">TX</option>
+                    <option value="TN">TN</option>
+                    <option value="TM">TM</option>
+                </select>
+            </div>
+            <div>
+                <label for="calculationType">סוג חישוב:</label>
+                <select id="calculationType">
+                    <option value="aboveThreshold">ימים מעל סף</option>
+                    <option value="belowThreshold">ימים מתחת לסף</option>
+                    <option value="temperatureAverage">ממוצע</option>
+                </select>
+            </div>
+            <div>
+                <label for="period">סוג ניתוח:</label>
+                <select id="period">
+                    <option value="year">שנתי</option>
+                    <option value="summer">קיץ</option>
+                    <option value="autumn">סתיו</option>
+                    <option value="spring">אביב</option>
+                    <option value="winter">חורף</option>
+                    <option value="1">ינואר</option>
+                    <option value="2">פברואר</option>
+                    <option value="3">מרץ</option>
+                    <option value="4">אפריל</option>
+                    <option value="5">מאי</option>
+                    <option value="6">יוני</option>
+                    <option value="7">יולי</option>
+                    <option value="8">אוגוסט</option>
+                    <option value="9">ספטמבר</option>
+                    <option value="10">אוקטובר</option>
+                    <option value="11">נובמבר</option>
+                    <option value="12">דצמבר</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-inline">
+            <div>
+                <label for="startYear">שנת התחלה:</label>
+                <input type="number" id="startYear" value="2000">
+            </div>
+            <div>
+                <label for="endYear">שנת סיום:</label>
+                <input type="number" id="endYear" value="2020">
+            </div>
+            <div>
+                <label for="threshold">סף:</label>
+                <input type="number" id="threshold" value="0" step="0.1">
+                <input type="range" id="thresholdSlider" min="-10" max="50" step="0.1" value="0" class="input-range">
+            </div>
+        </div>
+        <div class="form-group">
+            <button id="processData" class="button">Process Data</button>
+        </div>
+    </div>
+    <div class="graph">
+        <canvas id="climateChart"></canvas>
+        <div><button id="downloadGraphData" class="button">הורדת נתוני הגרף</button></div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let climateData = [];
+    let chart;
+    let summarizedResults = [];
+    const csvFileInput = document.getElementById('csvFile');
+    const processDataButton = document.getElementById('processData');
+    const thresholdInput = document.getElementById('threshold');
+    const thresholdSlider = document.getElementById('thresholdSlider');
+
+    processDataButton.addEventListener('click', () => {
+        const file = csvFileInput.files[0];
+        if (!file) {
+            alert('אנא בחר קובץ CSV.');
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const text = e.target.result;
+            processCSVData(text);
+        };
+        reader.readAsText(file);
+    });
+
+    thresholdSlider.addEventListener('input', function() {
+        thresholdInput.value = this.value;
+        updateGraph();
+    });
+
+    thresholdInput.addEventListener('input', function() {
+        thresholdSlider.value = this.value;
+        updateGraph();
+    });
+
+    function processCSVData(text) {
+        const rows = text.split('\n');
+        climateData = rows.map(row => {
+            const [year, month, day, TX, TN] = row.split(',').map(s => s.trim());
+            return { year: parseInt(year), month: parseInt(month), day: parseInt(day), TX: parseFloat(TX), TN: parseFloat(TN) };
+        }).filter(data => !isNaN(data.year) && !isNaN(data.month) && !isNaN(data.day) && !isNaN(data.TX) && !isNaN(data.TN));
+        calculateTM();
+        updateGraph();
+    }
+
+    function calculateTM() {
+        climateData.forEach(data => {
+            data.TM = (data.TX + data.TN) / 2;
+        });
+    }
+
+    function updateGraph() {
+        const analysisType = document.getElementById('analysisType').value;
+        const period = document.getElementById('period').value;
+        const calculationType = document.getElementById('calculationType').value;
+        const threshold = parseFloat(thresholdInput.value);
+        const startYear = parseInt(document.getElementById('startYear').value);
+        const endYear = parseInt(document.getElementById('endYear').value);
+
+        let filteredData = climateData.filter(data => (data.year >= startYear - 1) && (data.year <= endYear));
+
+        if (period === "winter") {
+            filteredData = climateData.filter(data => 
+                (data.month === 12 && data.year >= startYear - 1 && data.year < endYear) ||
+                (data.month === 1 && data.year >= startYear) ||
+                (data.month === 2 && data.year >= startYear)
+            ).map(data => {
+                if (data.month === 12) {
+                    return { ...data, year: data.year + 1 };
+                }
+                return data;
+            });
+            filteredData = filterInvalidSeasons(filteredData);
+        } else {
+            filteredData = filteredData.filter(data => data.year >= startYear && data.year <= endYear);
+            if (period !== "year") {
+                if (!isNaN(parseInt(period))) {
+                    filteredData = filteredData.filter(data => data.month === parseInt(period));
+                } else {
+                    const monthGroups = {
+                        'summer': [6, 7, 8],
+                        'autumn': [9, 10, 11],
+                        'spring': [3, 4, 5],
+                        'winter': [] 
+                    };
+                    filteredData = filteredData.filter(data => monthGroups[period].includes(data.month));
+                }
+            }
+            filteredData = filterInvalidMonths(filteredData);
+        }
+
+        let results = {};
+        filteredData.forEach(data => {
+            let key = data.year;
+            if (!results[key]) results[key] = { year: key, values: [] };
+            results[key].values.push(data[analysisType]);
+        });
+
+        summarizedResults = [];
+        for (let key in results) {
+            const data = results[key];
+            if (calculationType === 'temperatureAverage') {
+                data.result = data.values.reduce((a, b) => a + b, 0) / data.values.length || 0;
+            } else if (calculationType === 'aboveThreshold') {
+                data.result = data.values.filter(value => value >= threshold).length;
+            } else if (calculationType === 'belowThreshold') {
+                data.result = data.values.filter(value => value < threshold).length;
+            }
+            data.isValidMonth = data.values.length > 24 ? true : false;
+            summarizedResults.push(data);
+        }
+        renderChart(summarizedResults, analysisType, calculationType, threshold, csvFileInput.files[0]?.name, period);
+    }
+
+    function filterInvalidMonths(data) {
+        return data.map((d, index, arr) => {
+            const monthData = arr.filter(a => a.year === d.year && a.month === d.month);
+            const validMonth = monthData.length >= (30 - 6);
+            return { ...d, isValidMonth: validMonth };
+        }).filter(d => d.isValidMonth !== undefined);
+    }
+
+    function filterInvalidSeasons(data) {
+        return data.filter((data, index, arr) => {
+            const currentYear = data.year;
+            const decData = arr.filter(d => d.year === currentYear - 1 && d.month === 12);
+            const janData = arr.filter(d => d.year === currentYear && d.month === 1);
+            const febData = arr.filter(d => d.year === currentYear && d.month === 2);
+            const isValidDec = decData.length >= (31 - 6); 
+            const isValidJan = janData.length >= (31 - 6); 
+            const isValidFeb = febData.length >= (28 - 6); 
+            return isValidDec && isValidJan && isValidFeb;
+        });
+    }
+
+    function renderChart(results, analysisType, calculationType, threshold, fileName, period) {
+        const labels = results.map(data => data.year.toString());
+        const values = results.map(data => {
+            if (!data.isValidMonth) {
+                return 'NA';  
+            }
+            return data.result;
+        });
+
+        const ctx = document.getElementById('climateChart').getContext('2d');
+        if (chart) chart.destroy();
+
+        const formattedFileName = fileName.substring(0, fileName.lastIndexOf('.')) || fileName;
+        const calculationTypeDisplay = calculationType === 'temperatureAverage' ? 'ממוצע' : calculationType === 'aboveThreshold' ? 'ימים מעל סף' : 'ימים מתחת לסף';
+        let thresholdDisplay = calculationType === 'temperatureAverage' ? '' : ` ${threshold} מ"צ`;
+        let periodDisplay = isNaN(parseInt(period)) ? period : `חודש ${period}`
+        let graphTitle = `טמפרטורה ${analysisType}, ${calculationTypeDisplay}${thresholdDisplay}, ${periodDisplay}, ${formattedFileName}`;
+
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '',
+                    data: values,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                    spanGaps: false,  
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: graphTitle,
+                        font: { size: 24 }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function (context) { return context[0].label; },
+                            label: function (context) { 
+                                if (context.raw === 'NA') return 'נתונים חסרים';
+                                const value = parseFloat(context.raw).toFixed(1); 
+                                return ` ערך: ${value}`; 
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: { display: false }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: calculationType.includes('temperature') ? 'מעלות' : 'מספר ימים'
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    document.getElementById('downloadGraphData').addEventListener('click', () => {
+        let csvContent = "data:text/csv;charset=utf-8,Year,Value\r\n";
+        summarizedResults.forEach(data => {
+            csvContent += `${data.year},${data.result}\r\n`;
+        });
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement('a');
+        link.href = encodedUri;
+        link.download = 'climate_data.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+</script>
+</body>
+</html>
